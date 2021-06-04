@@ -5,8 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <math.h>
 
 #define TOTAL_CHALLENGES 12
+#define STDERR 2
+
 
 typedef int (*challenge)(char *, size_t, FILE *);
 
@@ -20,7 +24,7 @@ int challenge4(char *answer, size_t n, FILE *serverInput);
 
 int challenge5(char *answer, size_t n, FILE *serverInput);
 
-int challenge6(char *answer, size_t n, FILE *serverInput);
+int challenge6(char *answer, size_t n, FILE *serverInput) __attribute__ ((section (".RUN_ME")));
 
 int challenge7(char *answer, size_t n, FILE *serverInput);
 
