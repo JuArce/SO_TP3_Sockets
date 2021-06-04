@@ -1,5 +1,9 @@
-all:
+CFLAGS = -Wall -std=gnu99
+CC = gcc
+all: compile
 
+compile:  server.c challenges.c
+	$(CC) -o server server.c challenges.c $(CFLAGS)
 
 test: cpp pvs
 
@@ -13,5 +17,8 @@ pvs: clean
 
 cleanTest:
 	rm output.cppOut report.tasks
+
+clean:
+	rm -f server
 
 .PHONY:  all clean cleanTest cpp test pvs
