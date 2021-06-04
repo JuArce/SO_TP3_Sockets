@@ -25,11 +25,9 @@ static int checkAnswer(char *answer, char *correctOption) {
 }
 
 static int validateChallenge(char *answer, size_t n, FILE *serverInput, char *correctAnswer) {
-    if (getline(&answer, &n, serverInput) == -1) {//TODO Ver el errno getline es medio especial con el -1
-        perror("getline");
-        exit(EXIT_FAILURE);;
+    if (getline(&answer, &n, serverInput) == ERROR) {//TODO Ver el errno getline es medio especial con el -1
+        handleError("Getline failed");
     }
-
     return checkAnswer(answer, correctAnswer);
 }
 
@@ -71,10 +69,10 @@ int challenge3(char *answer, size_t n, FILE *serverInput) {
 int challenge4(char *answer, size_t n, FILE *serverInput) {
     printf("EBADF...\n\n");
 
-    if (write(69, "La respuesta es fk3wfLCm3QvS", 28) == -1) {
-        perror("write");
+    if (write(69, "La respuesta es fk3wfLCm3QvS", 28) == ERROR) {
+        perror("write"); //ESTE NO CAMBIA; SE QUEDA ASI
     }
-
+    printf("\n");
     printQuest(
             "¿Qué útil abstracción es utilizada para comunicarse con sockets? ¿se puede utilizar read(2) y write(2) para operar?");
 
@@ -126,7 +124,7 @@ int challenge7(char *answer, size_t n, FILE *serverInput) {
 
 int challenge8(char *answer, size_t n, FILE *serverInput) {
     printf("¿?\n\n");
-    printf("\033[0;30;40m La respuesta es BUmyYq5XxXGt \033[0m");
+    printf("\033[0;30;40m La respuesta es BUmyYq5XxXGt \033[0m\n");
 
     printQuest("¿Qué aplicaciones se pueden utilizar para ver el tráfico por la red?");
 
@@ -162,7 +160,7 @@ int challenge10(char *answer, size_t n, FILE *serverInput) {
     }
 
     if (systemResponse) {
-        printf("ENTER para reintentar\n");
+        printf("ENTER para reintentar\n\n");
     }
 
     printQuest("¿Cuáles son las características del protocolo SCTP?");
@@ -182,16 +180,16 @@ int challenge11(char *answer, size_t n, FILE *serverInput) {
 
 static void gdbme() {
     if (getpid() == MAGIC_PID) {
-        printf("La respuesta es gdb_rules\n");
+        printf("La respuesta es gdb_rules\n\n");
     } else {
-        printf("ENTER para reintentar\n");
+        printf("ENTER para reintentar\n\n");
     }
 }
 
 int challenge12(char *answer, size_t n, FILE *serverInput) {
     printf("Me conoces\n\n");
 
-    for(int i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) {
         boxMuller(0, 1);
     }
     printf("\n\n");

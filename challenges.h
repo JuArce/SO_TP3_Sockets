@@ -1,12 +1,14 @@
 #ifndef SO_TP3_SOCKETS_CHALLENGES_H
 #define SO_TP3_SOCKETS_CHALLENGES_H
 
-#include <unistd.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <math.h>
+#include <unistd.h>
+
+#include "defs.h"
 
 #define TOTAL_CHALLENGES 12
 #define STDERR 2

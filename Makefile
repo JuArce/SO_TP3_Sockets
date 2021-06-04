@@ -1,9 +1,12 @@
 CFLAGS = -Wall -std=gnu99 -lm
 CC = gcc
-all: compile
+all: compile client
 
 compile:  server.c challenges.c
 	$(CC) -o server server.c challenges.c $(CFLAGS)
+
+client: client.c
+	$(CC) -o client client.c $(CFLAGS)
 
 test: cpp pvs
 
@@ -20,5 +23,6 @@ cleanTest:
 
 clean:
 	rm -f server
+	rm -f client
 
 .PHONY:  all clean cleanTest cpp test pvs
