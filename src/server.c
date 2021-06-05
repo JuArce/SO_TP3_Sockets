@@ -2,9 +2,9 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/server.h"
 
-static int createServerSocket(socketData *address);
+static int createServerSocket(socketAddressData *address);
 
-static int bindAndWaitConnection(int serverFd, socketData *address, int addrLen);
+static int bindAndWaitConnection(int serverFd, socketAddressData *address, int addrLen);
 
 static void prepareAndWaitAnswers(char *answer, size_t answerLen, FILE *serverInput);
 
@@ -13,7 +13,7 @@ static void runChallenges(int connectedFd);
 
 int main(int argc, char const *argv[]) {
     int serverFd, connectedFd;
-    socketData address;
+    socketAddressData address;
 
     serverFd = createServerSocket(&address);
     connectedFd = bindAndWaitConnection(serverFd, &address, sizeof(address));
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-static int createServerSocket(socketData *address) {
+static int createServerSocket(socketAddressData *address) {
     int serverFd;
     int opt = 1;
 
@@ -48,7 +48,7 @@ static int createServerSocket(socketData *address) {
     return serverFd;
 }
 
-static int bindAndWaitConnection(int serverFd, socketData *address, int addrLen) {
+static int bindAndWaitConnection(int serverFd, socketAddressData *address, int addrLen) {
     // Forcefully attaching socket to the port 8080
     int connectedFd;
 

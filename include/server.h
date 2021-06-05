@@ -16,6 +16,6 @@
 
 #define SECONDS_WAIT 1
 
-typedef struct sockaddr_in socketData;
+typedef struct sockaddr_in socketAddressData;
 
 #endif //SO_TP3_SOCKETS_SERVER_H
