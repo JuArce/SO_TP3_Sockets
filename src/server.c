@@ -6,7 +6,6 @@ static void runChallenges(int connectedFd);
 
 static void prepareAndWaitAnswers(char *answer, size_t answerLen, FILE *serverInput);
 
-
 int main(int argc, char const *argv[]) {
     int serverFd, connectedFd;
     SocketAddressData address;

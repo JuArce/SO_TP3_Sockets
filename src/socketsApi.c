@@ -11,7 +11,6 @@ int openSocket(SocketAddressData *address) {
     }
 
     address->sin_family = AF_INET;
-    address->sin_addr.s_addr = INADDR_ANY;
     address->sin_port = htons(PORT);
 
     return serverFd;
@@ -19,6 +18,8 @@ int openSocket(SocketAddressData *address) {
 
 int createServer(SocketAddressData *address) { //también se podría manejar con un flag en openSocket
     int serverFd = openSocket(address);
+    address->sin_addr.s_addr = INADDR_ANY;
+
     int opt = 1;
 
     // Forcefully attaching socket to the port 8080
@@ -49,6 +50,10 @@ int bindSocketAndWaitConnection(int serverFd, SocketAddressData *address, int ad
 }
 
 void connectToServer(int sock, SocketAddressData *address, int addrLen) {
+    if (inet_pton(AF_INET, LOCALHOST, &address->sin_addr) <= 0) {
+        handleError("Invalid address/ Address not supported");
+    }
+
     if (connect(sock, (struct sockaddr *) address, addrLen) < 0) {
         handleError("Connection Failed");
     }
