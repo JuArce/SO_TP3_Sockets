@@ -1,10 +1,31 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "server.h"
 
 static int createServerSocket(socketData *address);
 
 static int bindAndWaitConnection(int serverFd, socketData *address, int addrLen);
 
+static void prepareAndWaitAnswers(char *answer, size_t answerLen, FILE *serverInput);
+
 static void runChallenges(int connectedFd);
+
+
+int main(int argc, char const *argv[]) {
+    int serverFd, connectedFd;
+    socketData address;
+
+    serverFd = createServerSocket(&address);
+    connectedFd = bindAndWaitConnection(serverFd, &address, sizeof(address));
+
+    runChallenges(connectedFd);
+
+    if (close(serverFd) == ERROR) {
+        handleError("Close failed");
+    }
+
+    return 0;
+}
 
 static int createServerSocket(socketData *address) {
     int serverFd;
@@ -46,64 +67,53 @@ static int bindAndWaitConnection(int serverFd, socketData *address, int addrLen)
     return connectedFd;
 }
 
-static void runChallenges(int connectedFd) {
+
+static void prepareAndWaitAnswers(char *answer, size_t answerLen, FILE *serverInput) {
     challenge challenges[TOTAL_CHALLENGES] = {challenge1, challenge2, challenge3, challenge4, challenge5,
                                               challenge6, challenge7, challenge8, challenge9, challenge10,
                                               challenge11, challenge12};
 
-    FILE *serverInput;
-    if((serverInput = fdopen(connectedFd, "r")) == NULL) {
-        handleError("Fdopen failed");
-    }
-
-    char *answer;
-    size_t n = MAX_INPUT;
-    if ((answer = calloc(n, sizeof(char))) == NULL) {
-        handleError("Memory Allocation failed");
-    }
-
     srand((int) time(NULL));
 
     int challenge = 0;
-    int correct = 0;
+
     while (challenge < TOTAL_CHALLENGES) {
+        int correct;
+
         printf("------------- DESAFIO -------------\n");
 
-        memset(answer, 0, n);
+        memset(answer, 0, answerLen);
 
-        correct = challenges[challenge](answer, n, serverInput);
+        correct = challenges[challenge](answer, answerLen, serverInput);
         if (correct) {
             challenge++;
         } else {
             printf("\nRespuesta incorrecta: %s\n", answer);
+            sleep(SECONDS_WAIT);
         }
-        sleep(SECONDS_WAIT);
         system("clear");
     }
+}
+
+static void runChallenges(int connectedFd) {
+    FILE *serverInput;
+    if ((serverInput = fdopen(connectedFd, "r")) == NULL) {
+        handleError("Fdopen failed");
+    }
+
+    char *answer;
+    size_t answerLen = MAX_INPUT;
+    if ((answer = calloc(answerLen, sizeof(char))) == NULL) {
+        handleError("Memory Allocation failed");
+    }
+
+    prepareAndWaitAnswers(answer, answerLen, serverInput);
 
     printf("Felicitaciones, finalizaron el juego. Ahora deberán implementar el servidor que se comporte como el servidor provisto\n\n");
 
-    if(fclose(serverInput) == ERROR){ //fclose también cierra el fd
+    if (fclose(serverInput) == ERROR) { //fclose también cierra el fd
         handleError("Fclose failed");
     }
 
     free(answer);
-}
-
-int main(int argc, char const *argv[]) {
-    int serverFd, connectedFd;
-    socketData address;
-
-    serverFd = createServerSocket(&address);
-    connectedFd = bindAndWaitConnection(serverFd, &address, sizeof(address));
-
-    runChallenges(connectedFd);
-
-    if (close(serverFd) == ERROR) {
-        handleError("Close failed");
-    }
-
-    sleep(10);
-
-    return 0;
 }
