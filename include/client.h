@@ -9,5 +9,6 @@
 #include <unistd.h>
 
 #include "defs.h"
+#include "socketsApi.h"
 
 #endif //SO_TP3_SOCKETS_CLIENT_H

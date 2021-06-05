@@ -10,12 +10,8 @@
 
 #include "challenges.h"
 #include "defs.h"
-
-#define PORT 8080
-#define SO_REUSEPORT 15
+#include "socketsApi.h"
 
 #define SECONDS_WAIT 1
-
-typedef struct sockaddr_in socketAddressData;
 
 #endif //SO_TP3_SOCKETS_SERVER_H

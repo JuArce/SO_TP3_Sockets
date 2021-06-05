@@ -2,23 +2,20 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/client.h"
 
-#define PORT 8080
+static void getClientAnswers(int serverFd);
 
 int main(int argc, char const *argv[]) {
-    if (argc != 3) {
-        fprintf(stderr, "Invalid arguments\n");
-        exit(0);
-    }
+    int sock;
+    SocketAddressData servAddr;
 
-    int sock = 0;
-    struct sockaddr_in servAddr;
+//    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+//        handleError("Socket creation failed");
+//    }
+//
+//    servAddr.sin_family = AF_INET;
+//    servAddr.sin_port = htons(atoi(argv[2]));
 
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        handleError("Socket creation failed");
-    }
-
-    servAddr.sin_family = AF_INET;
-    servAddr.sin_port = htons(atoi(argv[2]));
+    sock = openSocket(&servAddr);
 
 //    struct addrinfo *res;
 //    int error = 0;
@@ -29,31 +26,34 @@ int main(int argc, char const *argv[]) {
 //    }
 
     // Convert IPv4 and IPv6 addresses from text to binary form
-    if (inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr) <= 0) {
-        handleError("Invalid address/ Address not supported");
-    }
+//    if (inet_pton(AF_INET, "127.0.0.1", &servAddr.sin_addr) <= 0) {
+//        handleError("Invalid address/ Address not supported");
+//    }
 
-    if (connect(sock, (struct sockaddr *) &servAddr, sizeof(servAddr)) < 0) {
-        handleError("Connection Failed");
-    }
+    connectToServer(sock, &servAddr, sizeof(servAddr));
 
+    getClientAnswers(sock);
+
+    return 0;
+}
+
+static void getClientAnswers(int serverFd) {
     char *buffer;
-    size_t n = MAX_INPUT;
-    if ((buffer = calloc(n, sizeof(char))) == NULL){
+    size_t bufferLen = MAX_INPUT;
+    if ((buffer = calloc(bufferLen, sizeof(char))) == NULL) {
         handleError("Mem Allocation Failed");
     }
 
     while (1) {
-        memset(buffer, 0, n);
+        memset(buffer, 0, bufferLen);
 
-        getline(&buffer, &n, stdin);
+        getline(&buffer, &bufferLen, stdin);
 
-        if(write(sock, buffer, strlen(buffer)) == ERROR) {
+        int readChars = strlen(buffer);
+        if (readChars > 0 && write(serverFd, buffer, readChars) == ERROR) {
             handleError("Write failed");
         }
     }
 
-    free(buffer);
-
-    return 0;
+    //free(buffer);
 }
