@@ -3,17 +3,17 @@ CC = gcc
 
 all: server client
 
-server:  server.c challenges.c
-	$(CC) -o server server.c challenges.c $(CFLAGS)
+server:  src/server.c src/challenges.c
+	$(CC) -o server src/server.c src/challenges.c $(CFLAGS)
 
-client: client.c
-	$(CC) -o client client.c $(CFLAGS)
+client: src/client.c
+	$(CC) -o client src/client.c $(CFLAGS)
 
 test: clean
-	./pvs.sh; valgrind --leak-check=full -v ./server 2>> results.valgrind; valgrind --leak-check=full -v ./client 2>> results.valgrind; cppcheck --quiet --enable=all --force --inconclusive server.c levels.c client.c 2>> output.cppOut
+	mkdir tests; ./pvs.sh; valgrind --leak-check=full -v ./server 2>> tests/results.valgrind; valgrind --leak-check=full -v ./client 2>> tests/results.valgrind; cppcheck --quiet --enable=all --force --inconclusive src/server.c src/challenges.c src/client.c 2>> tests/output.cppOut
 
 cleanTest:
-	rm -rf output.cppOut report.tasks results.valgrind
+	rm -rf tests/output.cppOut tests/report.tasks tests/results.valgrind tests
 
 clean:
 	rm -f server
