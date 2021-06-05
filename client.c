@@ -45,7 +45,10 @@ int main(int argc, char const *argv[]) {
         memset(buffer, 0, n);
 
         getline(&buffer, &n, stdin);
-        write(sock, buffer, strlen(buffer));
+
+        if(write(sock, buffer, strlen(buffer)) == ERROR) {
+            handleError("Write failed");
+        }
     }
 
     free(buffer);

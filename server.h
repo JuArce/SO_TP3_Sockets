@@ -14,6 +14,8 @@
 #define PORT 8080
 #define SO_REUSEPORT 15
 
+#define SECONDS_WAIT 1
+
 typedef struct sockaddr_in socketData;
 
 #endif //SO_TP3_SOCKETS_SERVER_H

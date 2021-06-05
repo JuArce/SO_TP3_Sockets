@@ -51,7 +51,10 @@ static void runChallenges(int connectedFd) {
                                               challenge6, challenge7, challenge8, challenge9, challenge10,
                                               challenge11, challenge12};
 
-    FILE *serverInput = fdopen(connectedFd, "r");
+    FILE *serverInput;
+    if((serverInput = fdopen(connectedFd, "r")) == NULL) {
+        handleError("Fdopen failed");
+    }
 
     char *answer;
     size_t n = MAX_INPUT;
@@ -67,19 +70,22 @@ static void runChallenges(int connectedFd) {
         printf("------------- DESAFIO -------------\n");
 
         memset(answer, 0, n);
+
         correct = challenges[challenge](answer, n, serverInput);
         if (correct) {
             challenge++;
         } else {
             printf("\nRespuesta incorrecta: %s\n", answer);
-            sleep(1);
         }
-
+        sleep(SECONDS_WAIT);
         system("clear");
-        //TODO pensar en agregar un sleep
     }
 
     printf("Felicitaciones, finalizaron el juego. Ahora deberán implementar el servidor que se comporte como el servidor provisto\n\n");
+
+    if(fclose(serverInput) == ERROR){ //fclose también cierra el fd
+        handleError("Fclose failed");
+    }
 
     free(answer);
 }
@@ -93,13 +99,11 @@ int main(int argc, char const *argv[]) {
 
     runChallenges(connectedFd);
 
-    if (close(connectedFd) == ERROR) {
-        handleError("Close failed");
-    }
     if (close(serverFd) == ERROR) {
         handleError("Close failed");
     }
-    //TODO fijarse si falta limpiar algo y manejo de errores
+
+    sleep(10);
 
     return 0;
 }
