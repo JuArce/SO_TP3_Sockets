@@ -27,7 +27,7 @@ static void getClientAnswers(int serverFd) {
 
     int leave = 0;
     while (!leave) {
-//        printf("Ingrese su respuesta: ");
+        printf("Ingrese su respuesta: ");
 
         memset(buffer, 0, bufferLen);
 
