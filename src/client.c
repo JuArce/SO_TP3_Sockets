@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "../include/client.h"
 
+extern int errno;
+
 static void getClientAnswers(int serverFd);
 
 int main(int argc, char const *argv[]) {
@@ -23,16 +25,37 @@ static void getClientAnswers(int serverFd) {
         handleError("Mem Allocation Failed");
     }
 
-    while (1) {
+    int leave = 0;
+    while (!leave) {
+//        printf("Ingrese su respuesta: ");
+
         memset(buffer, 0, bufferLen);
 
-        getline(&buffer, &bufferLen, stdin);
+        int previousErrno = errno;
+        if (getline(&buffer, &bufferLen, stdin) == ERROR) {
+            if (previousErrno == errno) {
+                leave = 1;
+            } else {
+                handleError("Getline failed");
+            }
+        }
 
-        int readChars = strlen(buffer);
-        if (readChars > 0 && write(serverFd, buffer, readChars) == ERROR) {
-            handleError("Write failed");
+        if (!leave) {
+            int readChars = strlen(buffer);
+            if (readChars > 0) {
+                int sentChars = write(serverFd, buffer, readChars);
+                if (sentChars == ERROR) {
+                    handleError("Write failed");
+                }
+                if (sentChars == 0) {
+                    leave = 1;
+                }
+            }
         }
     }
 
-    //free(buffer);
+    printf("Terminating client\n");
+
+    closeSocket(serverFd);
+    free(buffer);
 }

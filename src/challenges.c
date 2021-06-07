@@ -85,7 +85,7 @@ int challenge4(char *answer, size_t answerLen, FILE *serverInput) {
 }
 
 int challenge5(char *answer, size_t answerLen, FILE *serverInput) {
-    printf("respuesta = strings:100\n\n"); //TODO fijarse en donde aparece en realidad xdxd
+    printf("respuesta = strings:135\n\n");
 
     printQuest("¿Cómo garantiza TCP que los paquetes llegan en orden y no se pierden?");
 

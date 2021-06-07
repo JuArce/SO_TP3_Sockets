@@ -12,10 +12,9 @@ int main(int argc, char const *argv[]) {
 
     serverFd = createServer(&address);
     connectedFd = bindSocketAndWaitConnection(serverFd, &address, sizeof(address));
+    closeSocket(serverFd); //Se puede cerrar, ya que sabemos que se va a conectar un solo cliente
 
     runChallenges(connectedFd);
-
-    closeSocket(serverFd);
 
     return 0;
 }
