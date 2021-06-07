@@ -20,7 +20,7 @@ Para iniciar el servidor, ejecutar:
 
 Para iniciar el cliente, ejecutar
 
-     $ ./client <address> <port>
+     $ ./client
 
 ## Instrucciones de Testeo
 En el caso de querer realizar testeos utilizando Valgrind, cppcheck y pvsStudio Analyzer, ejecutar:
